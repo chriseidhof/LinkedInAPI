@@ -21,5 +21,5 @@ Pod::Spec.new do |s|
 
   s.requires_arc = true
 
-  dependency 'cocoa-oauth', :git => 'https://github.com/chriseidhof/cocoa-oauth.git'
+  s.dependency 'cocoa-oauth', :git => 'https://github.com/chriseidhof/cocoa-oauth.git'
 end
