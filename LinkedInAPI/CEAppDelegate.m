@@ -7,6 +7,13 @@
 //
 
 #import "CEAppDelegate.h"
+#import "LinkedInAPI.h"
+
+@interface CEAppDelegate () {
+    LinkedInAPI* api;
+}
+
+@end
 
 @implementation CEAppDelegate
 
@@ -18,7 +25,48 @@
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
+    
+    UIWebView* webView = [[UIWebView alloc] initWithFrame:self.window.bounds];
+    [self.window addSubview:webView];
+    NSString* apikey = YOUR_API_KEY;
+    NSString* secretkey = YOUR_API_SECRET;   
+    NSString* token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+    NSString* secret = [[NSUserDefaults standardUserDefaults] objectForKey:@"secret"];
+
+    api = [[LinkedInAPI alloc] initWithConsumerKey:apikey secret:secretkey];
+    if(token && secret) {
+        [api setToken:token andSecret:secret];
+        [self userLoggedInWithToken:token secret:secret];
+    } else {
+        webView.delegate = api;
+        [api startAuthentication:^(NSURL *url) {
+            NSLog(@"url class: %@", [url class]);
+            NSURLRequest* request = [NSURLRequest requestWithURL:url];
+            [webView loadRequest:request];
+        }];
+    }
+    
+    api.delegate = self;
+    
     return YES;
+}
+
+- (void)userLoggedInWithToken:(NSString*)token secret:(NSString*)secret {
+    [[NSUserDefaults standardUserDefaults] setObject:token forKey:@"token"];
+    [[NSUserDefaults standardUserDefaults] setObject:secret forKey:@"secret"];
+    NSLog(@"user logged in");
+    NSString* messageBody = [NSString stringWithFormat:@"message: %@", [NSDate date]];
+    [api sendMessageWithBody:messageBody title:@"msg title" recipient:@"/people/~" success:^{
+        NSLog(@"message sent!");
+    } failureHandler:^(NSError *error) {
+        NSLog(@"message error: %@", error);
+    }];
+//    [api getConnections:^(id result) {
+//        NSArray* connections = result;
+//        NSLog(@"connections: %d, last item: %@", [connections count], [connections lastObject]);
+//    } failureHandler:^(NSError *error) {
+//        NSLog(@"connections error: %@", error);
+//    }];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
