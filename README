@@ -1,0 +1,3 @@
+This is a start of an Objective-C interface to LinkedIn. This project uses [CocoaPods](http://cocoapods.org).
+
+Only very few methods are covered, but the "hard work" (OAuth dance) is done. Adding new methods should be very simple.
