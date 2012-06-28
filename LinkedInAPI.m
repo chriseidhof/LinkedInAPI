@@ -103,7 +103,9 @@ static NSString* linkedInCallbackURL = @"http://linkedin/oauth";
 
 - (void)requestTokenFromProvider
 {
-    NSURLRequest* request = [self requestForPostWithURL:[NSURL URLWithString:requestTokenURLString] parameters:nil oauthParameters:nil];
+    NSDictionary* oauthParameters = [NSDictionary dictionaryWithObject:linkedInCallbackURL 
+                                                                forKey:@"oauth_callback"];
+    NSURLRequest* request = [self requestForPostWithURL:[NSURL URLWithString:requestTokenURLString] parameters:nil oauthParameters:oauthParameters];
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse * response, NSData * data, NSError * error) {
         if(error) {
             return;
