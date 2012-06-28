@@ -29,6 +29,7 @@ typedef void(^APIFail)(NSError* error);
 - (void)setToken:(NSString*)token_ andSecret:(NSString*)secret_;
 - (void)getConnections:(APICallback)callback failureHandler:(APIFail)failureHandler;
 - (void)getProfile:(APICallback)callback failureHandler:(APIFail)failureHandler;
+- (void)getProfile:(APICallback)success failureHandler:(APIFail)failureHandler fields:(NSArray*)fields;
 - (void)sendMessageWithBody:(NSString*)body 
                       title:(NSString*)title
                   recipient:(NSString*)recipient

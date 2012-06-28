@@ -8,7 +8,6 @@
 
 #import "LinkedInAPI.h"
 #import "GCOAuth.h"
-#import "BlocksKit.h"
 
 @interface LinkedInAPI () {
     NSString* consumerKey;
@@ -199,8 +198,18 @@ static NSString* linkedInCallbackURL = @"http://linkedin/oauth";
 }
 
 - (void)getProfile:(APICallback)success failureHandler:(APIFail)failureHandler {
-    [self apiMethodForPath:@"people/~" success:^(id result) {
-        success([result objectForKey:@"values"]);
+    [self getProfile:success failureHandler:failureHandler fields:nil];
+}
+
+- (void)getProfile:(APICallback)success failureHandler:(APIFail)failureHandler fields:(NSArray*)fields {
+    NSString* path = @"people/~";
+    if([fields count]) {
+        NSString* joined = [fields componentsJoinedByString:@","];
+        NSString* fieldSelector = [NSString stringWithFormat:@":(%@)", joined];
+        path = [path stringByAppendingString:fieldSelector];
+    }
+    [self apiMethodForPath:path success:^(id result) {
+        success(result);
     } failureHandler:failureHandler];
 }
 
